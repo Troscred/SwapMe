@@ -1,0 +1,56 @@
+{
+  "Catégories": {
+    "Administration": [
+      "Archives, Inventaire",
+      "Comptabilité",
+      "Factures",
+      "Rédaction, correction",
+      "Service téléphonique"
+    ],
+    "Animaux": [
+      "Assistance pendant absence",
+      "Garde",
+      "Occupations, sorties",
+      "Soins"
+    ],
+    "Jardin": [
+      "Arrosage",
+      "Construction",
+      "Cueillette",
+      "Désherber",
+      "Entretien, aménagement",
+      "Tondre"
+    ],
+    "Langues": [
+      "Allemand",
+      "Anglais",
+      "Arabe",
+      "Grec ancien",
+      "Noich",
+      "Somalien",
+      "Tchétchenne",
+      "Vieux Français"
+    ],
+    "Santé": [
+      "Accuponcture",
+      "Chamanisme",
+      "Logopédie",
+      "Massage",
+      "Nutrition",
+      "Shiatsu"
+    ],
+    "Sport, loisirs": [
+      "Accompagnement",
+      "Fitness",
+      "Mixed Martial Art",
+      "Muay Thai",
+      "Yoga",
+      "Échecs"
+    ],
+    "Véhicules": [
+      "Conseil à l'achat",
+      "Lavage",
+      "Travaux simples"
+    ]
+  }
+}
