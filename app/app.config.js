@@ -1,7 +1,7 @@
 'use strict';
 
 angular.
-  module('testApp').
+  module('app').
   config(['$locationProvider' ,'$routeProvider',
     function config($locationProvider, $routeProvider)
     {

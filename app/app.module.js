@@ -1,7 +1,8 @@
 'use strict';
 
-angular.module('testApp',
+angular.module('app',
 [
   'ngRoute',
+  'core',
   'mapContainer'
 ]);

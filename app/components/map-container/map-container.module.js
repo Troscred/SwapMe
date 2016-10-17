@@ -2,5 +2,6 @@
 
 angular.module('mapContainer',
   [
+    'core.dbAccess',
     'ngMap'
   ]);
