@@ -1,6 +1,19 @@
-<map center="the statue of liberty" ></map>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvCkq-OZtfKsq2cs5eeQnbBNds18-5e9c&callback=initMap"async defer></script>
+
+<script>
+
+var map;
+function initMap()
+{
+  map = new google.maps.Map(document.getElementById('map'),
+  {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8
+  });
+}
+
+console.log(map);
+
+</script>
 
 {{users}}
-
-
-<!-- USE GOOGLE MAP API INSTEAD OF NGMAP???? GOOGLE.JS OR GOOGLE.MIN.JS -->

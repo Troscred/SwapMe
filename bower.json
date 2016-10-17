@@ -10,7 +10,6 @@
 	"angular-route": "1.5.x",
     "angular-resource": "1.5.x",
     "bootstrap": "3.x",
-	"google-maps": "3.x",
-	"ngmap": "1.x"
+	"google-maps": "3.x"
   }
 }

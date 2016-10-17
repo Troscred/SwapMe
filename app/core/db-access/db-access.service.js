@@ -10,8 +10,7 @@ angular.
         getData: 
         {
           method: 'GET',
-          // params: {phoneId: 'phones'},
-          isArray: false
+          isArray: true
         }
       });
     }

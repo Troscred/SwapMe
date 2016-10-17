@@ -26,14 +26,6 @@ if (exists)
 {
   console.log("Database found! I'm happy.")
   var db = new sqlite3.Database(dbPath);
-
-  // db.serialize(function()
-  // {
-    // db.each("SELECT * FROM Users", function(err, row)
-    // {
-      // console.log(row.Name);
-    // });
-  // });
 }
 else
 {
@@ -48,7 +40,7 @@ router.get('/', function (req, res)
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
   res.header("Access-Control-Allow-Headers", "Content-Type");
 
-  db.get("SELECT * FROM Users", function(err, row)
+  db.all("SELECT * FROM Users", function(err, rows)
   {
     if (err !== null)
     {
@@ -56,11 +48,10 @@ router.get('/', function (req, res)
     }
     else
     {
-      console.log(row);
-      res.json(row);
+      // console.log(rows);
+      res.json(rows);
     }
   });
-  // res.json({ message : "Welcome to the API !" });
 });
 
 // Register our routes
