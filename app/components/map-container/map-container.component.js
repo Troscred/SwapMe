@@ -10,7 +10,7 @@ angular.
       function mapContainerController($scope, dbAccess)
       {
         console.log("GOT : ");
-        console.log(dbAccess.query());
-        $scope.users = dbAccess.query();
+        console.log(dbAccess.getData());
+        $scope.users = dbAccess.getData();
       }]
   });

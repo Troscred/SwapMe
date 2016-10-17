@@ -8,8 +8,8 @@ var
   
 // Configure app to use body-parser
 var app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(bodyParser.json());
 
 var port = process.env.PORT || 3000;
 var prefix = "/db";
@@ -37,16 +37,30 @@ if (exists)
 }
 else
 {
-  console.log("Database not found!");
+  throw new Error("Database " + dbPath + " not found!"); // Terminate execution
 }
 
 router.get('/', function (req, res)
 {
   console.log(new Date().getHours() + ":" + new Date().getMinutes() + " | GET request on   " + prefix + ":" + port)
+  
   res.header("Access-Control-Allow-Origin", "*"); // * Temporary
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
   res.header("Access-Control-Allow-Headers", "Content-Type");
-  res.json({ message : "Welcome to the API !" });
+
+  db.get("SELECT * FROM Users", function(err, row)
+  {
+    if (err !== null)
+    {
+      console.error("DB query error : ", err);
+    }
+    else
+    {
+      console.log(row);
+      res.json(row);
+    }
+  });
+  // res.json({ message : "Welcome to the API !" });
 });
 
 // Register our routes

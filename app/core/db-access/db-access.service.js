@@ -7,11 +7,11 @@ angular.
     {
       return $resource('http://localhost:3000/db', {}, 
       {
-        query: 
+        getData: 
         {
           method: 'GET',
           // params: {phoneId: 'phones'},
-          // isArray: true
+          isArray: false
         }
       });
     }
