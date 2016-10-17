@@ -42,7 +42,7 @@ else
 
 router.get('/', function (req, res)
 {
-  console.log("Get request on" + prefix + ":" + port)
+  console.log(new Date().getHours() + ":" + new Date().getMinutes() + " | GET request on   " + prefix + ":" + port)
   res.header("Access-Control-Allow-Origin", "*"); // * Temporary
   res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
   res.header("Access-Control-Allow-Headers", "Content-Type");

@@ -6,10 +6,11 @@ angular.
   {
     templateUrl: 'components/map-container/map-container.template.html',
     controller:
-      ['dbAccess', function mapContainerController(dbAccess)
+      ['$scope','dbAccess',
+      function mapContainerController($scope, dbAccess)
       {
         console.log("GOT : ");
         console.log(dbAccess.query());
-        // $scope.users = dbAccess.query();
+        $scope.users = dbAccess.query();
       }]
   });
