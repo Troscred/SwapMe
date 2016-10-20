@@ -16,7 +16,7 @@ angular.
         {
           users.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
           {
-            geocoder.geocode({"address": user.Adresse + ", Suisse"}, function(results, status) // -> Specify options to limit to CH? or zone
+            geocoder.geocode({"address": user.Adresse + ", Suisse"},function(results, status) // -> Specify options to limit to CH? or zone
             {
               if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
               {
@@ -34,7 +34,7 @@ angular.
         },
         function (err) // DB Failure
         {
-          console.log("Error while fetching users from db !");
+          console.err("Error while fetching users from db !");
         });
         console.log($scope.usersLocation);
       }])
