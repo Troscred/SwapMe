@@ -12,12 +12,10 @@ angular.
         var geocoder = new google.maps.Geocoder();
         $scope.usersLocation = [];
         
-        // Get users from DB
-        dbAccess.getUsers(function(data) // DB Success
+        dbAccess.getUsers(function(users) // DB Success
         {
-          for (var i=0; i<data.length; i++) // Geocode each user's address
+          users.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
           {
-            var user = data[i];
             geocoder.geocode({"address": user.Adresse + ", Suisse"}, function(results, status) // -> Specify options to limit to CH? or zone
             {
               if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
@@ -30,13 +28,13 @@ angular.
                 console.err("Geocoding process failed for " + user.Name);
               }
             });
-          }
+          });
           
-          $scope.users = data;
+          $scope.users = users;
         },
         function (err) // DB Failure
         {
-          console.log("Error while fetching data from db !");
+          console.log("Error while fetching users from db !");
         });
         console.log($scope.usersLocation);
       }])
