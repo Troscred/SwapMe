@@ -7,7 +7,7 @@ angular.
     {
       return $resource('http://localhost:3000/db', {}, 
       {
-        getData: 
+        getUsers: 
         {
           method: 'GET',
           isArray: true

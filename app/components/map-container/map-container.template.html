@@ -1,19 +1,15 @@
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCvCkq-OZtfKsq2cs5eeQnbBNds18-5e9c&callback=initMap"async defer></script>
-
-<script>
-
-var map;
-function initMap()
-{
-  map = new google.maps.Map(document.getElementById('map'),
-  {
-    center: {lat: -34.397, lng: 150.644},
-    zoom: 8
-  });
-}
-
-console.log(map);
-
-</script>
+<ng-map center="[46.206925, 6.143230]" zoom-to-include-markers="true">
+  <marker
+    ng-repeat="loc in usersLocation"
+    id="{{loc.id}}"
+    position="{{loc.pos}}">
+  </marker>
+  <marker
+    position="46.2, 6.1">
+  </marker>
+  <marker
+    position="46.1, 6.4">
+  </marker>
+</ng-map>
 
 {{users}}
