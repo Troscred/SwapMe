@@ -1,15 +1,1 @@
-<ng-map center="[46.206925, 6.143230]" zoom-to-include-markers="true">
-  <marker
-    ng-repeat="loc in usersLocation"
-    id="marker{{loc.id}}"
-    position="{{loc.pos}}"
-    on-click="map.showInfoWindow('iw{{loc.id}}')">
-  </marker>
-  <info-window
-    ng-repeat="loc in usersLocation"
-    id="iw{{loc.id}}"
-    visible-on-marker="marker{{loc.id}}">
-    <p>HEHE</p>
-  </info-window>
-    
-</ng-map>
+<div id="map_canvas"></div> <!--Beware of CSS! -->

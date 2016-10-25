@@ -7,16 +7,22 @@ angular.module('mapContainer')
       'components/map-container/map-container.template.html',
     controller:
       ('mapContainerController',
-      ['$scope','dbAccess',
-      function ($scope, dbAccess)//, NgMap)
+      ['$scope', '$timeout', 'dbAccess',
+      function ($scope, $timeout, dbAccess)
       {
         var geocoder = new google.maps.Geocoder();
         $scope.usersLocation = [];
         
+        //
+        // -- DB ACCESS --
+        //
         dbAccess.getUsers(function(users) // DB Success
         {
           users.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
           {
+            //
+            // -- GEOCODING --
+            //
             geocoder.geocode({"address": user.Adresse + ", Suisse", "region": "CH"},function(results, status) // API KEY?
             {
               if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
@@ -42,5 +48,20 @@ angular.module('mapContainer')
         });
         
         console.log($scope.usersLocation);
+        
+        //
+        // -- MAP INITIALIZATION --
+        //
+        $timeout(function()
+        {
+          var latlng = new google.maps.LatLng(46.214276, 6.154324);
+          var myOptions =
+          {
+              zoom: 8,
+              center: latlng
+          };
+          $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        },
+        100);
       }])
   });
