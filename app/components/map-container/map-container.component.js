@@ -11,7 +11,7 @@ angular.module('mapContainer')
       function ($scope, $timeout, dbAccess)
       {
         var geocoder = new google.maps.Geocoder();
-        $scope.usersLocation = [];
+        var usersInfo = [];
         
         //
         // -- DB ACCESS --
@@ -28,14 +28,14 @@ angular.module('mapContainer')
               if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
               {
                 var loc = results[0].geometry.location;
-                if ($scope.usersLocation.push({"id" : user.ID, "pos" : [loc.lat(), loc.lng()]}) == users.length) // Push returns new array's length
+                if (usersInfo.push({"id" : user.ID, "surname":user.Surname, "name":user.Name, "pos" : [loc.lat(), loc.lng()]}) == users.length) // Push returns new array's length
                 {
-                  $scope.$apply(); // Preprocessing over. Launch digest
+                  // $scope.$apply(); // Preprocessing over. Launch digest. Only if html needs scope
                 }
               }
               else // Geocoding failure
               {
-                console.err("Geocoding process failed for " + user.Name);
+                console.error("Geocoding process failed for " + user.Name);
               }
             });
           });
@@ -44,24 +44,50 @@ angular.module('mapContainer')
         },
         function(err) // DB Failure
         {
-          console.err("Error while fetching users from db !");
+          console.error("Error while fetching users from db !");
         });
         
-        console.log($scope.usersLocation);
+        console.log(usersInfo);
         
         //
         // -- MAP INITIALIZATION --
         //
-        $timeout(function()
+        var period = 400; // WATCH THIS TIME. MIGHT BE TOO SHORT
+        $timeout(function() // Called after <period> ms
         {
-          var latlng = new google.maps.LatLng(46.214276, 6.154324);
-          var myOptions =
+          var mapOptions =
           {
-              zoom: 8,
-              center: latlng
+              zoom: 11,
+              center: new google.maps.LatLng(46.214276, 6.154324)
           };
-          $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+          var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+          
+          var infoWindows = []; // Initialize markers and info windows
+          usersInfo.forEach(function(info)
+          {
+            var marker = new google.maps.Marker(
+            {
+              position: new google.maps.LatLng(info.pos[0], info.pos[1]),
+              map: map,
+            });
+            
+            var infoWindow = new google.maps.InfoWindow(
+            {
+              content: info.surname + " " + info.name
+            });
+            
+            infoWindows.push(infoWindow);
+            
+            marker.addListener('click',function()
+            {
+              infoWindows.forEach(function(iw)
+              {
+                iw.close();
+              });
+              infoWindow.open(map, marker);
+            });
+          });
         },
-        100);
+        period);
       }])
   });
