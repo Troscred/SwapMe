@@ -52,42 +52,53 @@ angular.module('mapContainer')
         //
         // -- MAP INITIALIZATION --
         //
-        var period = 400; // WATCH THIS TIME. MIGHT BE TOO SHORT
-        $timeout(function() // Called after <period> ms
+        $timeout(function()
         {
-          var mapOptions =
+          var latlng = new google.maps.LatLng(46.214276, 6.154324);
+          var myOptions =
           {
-              zoom: 11,
-              center: new google.maps.LatLng(46.214276, 6.154324)
+              zoom: 8,
+              center: latlng
           };
-          var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-          
-          var infoWindows = []; // Initialize markers and info windows
-          usersInfo.forEach(function(info)
-          {
-            var marker = new google.maps.Marker(
-            {
-              position: new google.maps.LatLng(info.pos[0], info.pos[1]),
-              map: map,
-            });
-            
-            var infoWindow = new google.maps.InfoWindow(
-            {
-              content: info.surname + " " + info.name
-            });
-            
-            infoWindows.push(infoWindow);
-            
-            marker.addListener('click',function()
-            {
-              infoWindows.forEach(function(iw)
-              {
-                iw.close();
-              });
-              infoWindow.open(map, marker);
-            });
-          });
+          $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
         },
-        period);
+        300);
+        // var period = 400; // WATCH IT. MIGHT BE TOO SHORT
+        // $timeout(function() // Called after <period> ms
+        // {
+          // var mapOptions =
+          // {
+              // zoom: 11,
+              // center: new google.maps.LatLng(46.214276, 6.154324)
+          // };
+          // var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+          
+          // var infoWindows = []; // Initialize markers and info windows
+          // usersInfo.forEach(function(info)
+          // {
+            // var marker = new google.maps.Marker(
+            // {
+              // position: new google.maps.LatLng(info.pos[0], info.pos[1]),
+              // map: map,
+            // });
+            
+            // var infoWindow = new google.maps.InfoWindow(
+            // {
+              // content: info.surname + " " + info.name
+            // });
+            
+            // infoWindows.push(infoWindow);
+            
+            // marker.addListener('click',function()
+            // {
+              // infoWindows.forEach(function(iw)
+              // {
+                // iw.close();
+              // });
+              // infoWindow.open(map, marker);
+            // });
+          // });
+        // },
+        // period);
       }])
   });
