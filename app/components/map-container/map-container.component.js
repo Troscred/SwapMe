@@ -47,8 +47,6 @@ angular.module('mapContainer')
           console.error("Error while fetching users from db !");
         });
         
-        console.log(usersInfo);
-        
         //
         // -- MAP INITIALIZATION --
         //

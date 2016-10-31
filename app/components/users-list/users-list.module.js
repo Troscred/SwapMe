@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('mapContainer',
+angular.module('usersList',
   [
     'core.dbAccess'
   ]);

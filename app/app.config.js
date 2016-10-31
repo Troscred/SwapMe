@@ -14,7 +14,7 @@ angular.
         }).
         when('/map',
         {
-          template: '<map-container></map-container>'
+          template: '<search-engine></search-engine>'
         }).
         otherwise('/main');
     }

@@ -4,5 +4,5 @@ angular.module('app',
 [
   'ngRoute',
   'core',
-  'mapContainer'
+  'searchEngine'
 ]);

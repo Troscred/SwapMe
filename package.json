@@ -18,7 +18,7 @@
   },
   "scripts": {
     "postinstall": "bower install",
-    "prestart": "start sh prestart.sh",
+    "prestart": "start node restAPI.js",
     "start": "http-server ./app -a localhost -p 8001 -c-1",
     "pretest": "npm install",
     "test": "karma start karma.conf.js",
