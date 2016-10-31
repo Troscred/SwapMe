@@ -50,7 +50,18 @@ angular.module('mapContainer')
         //
         // -- MAP INITIALIZATION --
         //
-        var period = 400; // WATCH THIS TIME. MIGHT BE TOO SHORT
+        $timeout(function()
+        {
+          var latlng = new google.maps.LatLng(46.214276, 6.154324);
+          var myOptions =
+          {
+              zoom: 8,
+              center: latlng
+          };
+          $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+        },
+        300);
+        var period = 400; // WATCH IT. MIGHT BE TOO SHORT
         $timeout(function() // Called after <period> ms
         {
           var mapOptions =
