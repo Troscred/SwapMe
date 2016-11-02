@@ -7,8 +7,16 @@ angular.module('searchEngine')
       'components/search-engine/search-engine.template.html',
     controller:
       ('searchEngineController',
-      ['$scope',
-      function ($scope)
+      ['$scope', '$timeout',
+      function ($scope, $timeout)
       {
+        var addUserMarker = function()
+        {
+          $scope.$broadcast("addUser", {location:[46.217852, 6.157264], fullName:"Robert Pute"});
+        }
+        $timeout(function()
+        {
+          addUserMarker();
+        }, 1000);
       }])
   });

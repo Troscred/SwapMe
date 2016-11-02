@@ -7,8 +7,8 @@ angular.module('mapContainer')
       'components/map-container/map-container.template.html',
     controller:
       ('mapContainerController',
-      ['$scope', '$timeout', 'dbAccess',
-      function ($scope, $timeout, dbAccess)
+      ['$scope', 'dbAccess',
+      function ($scope, dbAccess)
       {
         var geocoder = new google.maps.Geocoder();
         var usersInfo = [];
@@ -50,53 +50,58 @@ angular.module('mapContainer')
         //
         // -- MAP INITIALIZATION --
         //
-        $timeout(function()
+        var mapOptions =
         {
-          var latlng = new google.maps.LatLng(46.214276, 6.154324);
-          var myOptions =
-          {
-              zoom: 8,
-              center: latlng
-          };
-          $scope.map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-        },
-        300);
-        var period = 400; // WATCH IT. MIGHT BE TOO SHORT
-        $timeout(function() // Called after <period> ms
+          zoom: 11,
+          center: new google.maps.LatLng(46.214276, 6.154324)
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        var infoWindows = [];
+        var markers = [];
+        
+        // Fully loaded event
+        google.maps.event.addListenerOnce(map, 'idle', function()
         {
-          var mapOptions =
-          {
-              zoom: 11,
-              center: new google.maps.LatLng(46.214276, 6.154324)
-          };
-          var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-          
-          var infoWindows = []; // Initialize markers and info windows
           usersInfo.forEach(function(info)
           {
-            var marker = new google.maps.Marker(
-            {
-              position: new google.maps.LatLng(info.pos[0], info.pos[1]),
-              map: map,
-            });
-            
-            var infoWindow = new google.maps.InfoWindow(
-            {
-              content: info.surname + " " + info.name
-            });
-            
-            infoWindows.push(infoWindow);
-            
-            marker.addListener('click',function()
-            {
-              infoWindows.forEach(function(iw)
-              {
-                iw.close();
-              });
-              infoWindow.open(map, marker);
-            });
+            addUserMarker([info.pos[0], info.pos[1]], info.surname + " " + info.name);
           });
-        },
-        period);
+        });
+        
+        //
+        // -- MAP FUNCTIONS --
+        //
+        function addUserMarker(userLocation, userFullName)
+        {
+          var marker = new google.maps.Marker(
+          {
+            position: new google.maps.LatLng(userLocation[0],userLocation[1]),
+            title: userFullName,
+            map: map
+          });
+          
+          var infoWindow = new google.maps.InfoWindow(
+          {
+            content: userFullName
+          });
+
+          marker.addListener("click", function()
+          {
+            infoWindows.forEach(function(iw)
+            {
+              iw.close();
+            });
+            infoWindow.open(map, marker);
+          });
+          
+          markers.push(marker);
+          infoWindows.push(infoWindow);
+        }
+        
+        // Called from parent
+        $scope.$on("addUser", function(event, args)
+        {
+          addUserMarker(args.location, args.fullName);
+        });
       }])
   });

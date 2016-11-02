@@ -1,1 +1,16 @@
-<div>puteputepute!</div>
+<style>
+  #filters
+  {
+    display: flex;
+    justify-content: center;
+  }
+  .filterButton
+  {
+    margin: 5px;
+  }
+</style>
+
+<div id="filters">
+ <button class="filterButton" ng-click="onClickRG()">RG</button><button class="filterButton">RD</button><button class="filterButton">Majeurs</button><button class="filterButton">CLEAR</button>
+</div>
+<div ng-repeat="usr in users">Welcome {{usr.Name}}</div> <!-- Not use the same expression for ng-repeat! -->

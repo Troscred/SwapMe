@@ -1,4 +1,30 @@
-<div>
-  <map-container></map-container>
-  <users-list></users-list>
+<style>
+  #mainContainer
+  {
+    width: 100%;
+    height: 800px;
+    display: flex;
+    background: black;
+  }
+  #catMenu
+  {
+    background: lime;
+  }
+  #subContainer
+  {
+    background: yellow;
+  }
+  #googleMap
+  {
+    width: 400px;
+    height: 400px;
+  }
+</style>
+
+<div id="mainContainer">
+  <div id="catMenu">CATEGORIES</div>
+  <div id="subContainer">
+    <map-container id="googleMap"></map-container>
+    <users-list></users-list>
+  </div>
 </div>
