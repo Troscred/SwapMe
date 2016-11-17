@@ -2,5 +2,5 @@
 
 angular.module('mapContainer',
   [
-    'core.dbAccess'
+    // Modules dependencies here (not constants!!!)
   ]);

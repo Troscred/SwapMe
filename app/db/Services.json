@@ -1,56 +1,54 @@
 {
-  "Catégories": {
-    "Administration": [
-      "Archives, Inventaire",
-      "Comptabilité",
-      "Factures",
-      "Rédaction, correction",
-      "Service téléphonique"
-    ],
-    "Animaux": [
-      "Assistance pendant absence",
-      "Garde",
-      "Occupations, sorties",
-      "Soins"
-    ],
-    "Jardin": [
-      "Arrosage",
-      "Construction",
-      "Cueillette",
-      "Désherber",
-      "Entretien, aménagement",
-      "Tondre"
-    ],
-    "Langues": [
-      "Allemand",
-      "Anglais",
-      "Arabe",
-      "Grec ancien",
-      "Noich",
-      "Somalien",
-      "Tchétchenne",
-      "Vieux Français"
-    ],
-    "Santé": [
-      "Accuponcture",
-      "Chamanisme",
-      "Logopédie",
-      "Massage",
-      "Nutrition",
-      "Shiatsu"
-    ],
-    "Sport, loisirs": [
-      "Accompagnement",
-      "Fitness",
-      "Mixed Martial Art",
-      "Muay Thai",
-      "Yoga",
-      "Échecs"
-    ],
-    "Véhicules": [
-      "Conseil à l'achat",
-      "Lavage",
-      "Travaux simples"
-    ]
+  "Administration": {
+    "Archives, Inventaire": 0,
+    "Comptabilité": 0,
+    "Factures": 0,
+    "Rédaction, correction": 0,
+    "Service téléphonique": 0
+  },
+  "Animaux": {
+    "Assistance pendant absence": 0,
+    "Garde": 0,
+    "Occupations, sorties": 0,
+    "Soins": 0
+  },
+  "Jardin": {
+    "Arrosage": 0,
+    "Construction": 0,
+    "Cueillette": 0,
+    "Désherber": 0,
+    "Entretien, aménagement": 0,
+    "Tondre": 0
+  },
+  "Langues": {
+    "Allemand": 0,
+    "Anglais": 0,
+    "Arabe": 0,
+    "Grec ancien": 0,
+    "Noich": 0,
+    "Somalien": 0,
+    "Tchétchenne": 0,
+    "Vieux Français": 0
+  },
+  "Santé": {
+    "Accuponcture": 0,
+    "Chamanisme": 0,
+    "Logopédie": 0,
+    "Massage": 0,
+    "Nutrition": 0,
+    "Shiatsu": 0
+  },
+  "Sport, loisirs": {
+    "Accompagnement": 0,
+    "Fitness": 0,
+    "Mixed Martial Art": 0,
+    "Muay Thai": 0,
+    "Yoga": 0,
+    "Échecs": 0
+  },
+  "Véhicules": {
+    "Conseil à l'achat": 0,
+    "Lavage": 0,
+    "Travaux simples": 0
   }
 }

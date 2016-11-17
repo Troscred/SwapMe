@@ -7,24 +7,20 @@ angular.module('usersList')
       'components/users-list/users-list.template.html',
     controller:
       ('usersListController',
-      ['$scope', 'dbAccess',
-      function ($scope, dbAccess)
+      ['$scope', 'EVENTS',
+      function ($scope, EVENTS)
       {
-        //
-        // -- DB ACCESS --
-        //
-        dbAccess.getUsers(function(users) // DB Success
-        {
-          $scope.users = users;
-          console.log(users);
-        });
+        $scope.users = $scope.$parent.users;
         
-        //
-        // -- FILTER --
-        //
         $scope.onClickRG = function()
         {
           console.log("RG Button clicked!");
         }
+        
+        // Called from parent
+        $scope.$on(EVENTS.ADDUSER, function(event, args)
+        {
+//          console.log("userList got <Add user> event");
+        });
       }])
   });
