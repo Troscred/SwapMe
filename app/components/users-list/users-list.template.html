@@ -11,10 +11,6 @@
 </style>
 
 <div id="filters">
-  <button class="filterButton" ng-click="onClickTous()">Tous</button>
-  <button class="filterButton" ng-click="onClickRG()">RG</button>
-  <button class="filterButton">RD</button>
-  <button class="filterButton">Majeurs</button>
-  <button class="filterButton">Reinit.</button>
+  <button class= "filterButton" ng-repeat="option in filterOptions" ng-click=filterButtonClick(option)>{{option}}</button>
 </div>
-<p ng-repeat="usr in users">Welcome {{usr.Name}}</p> <!-- Not use the same expression for ng-repeat across app! -->
+<p ng-repeat="usr in users">Hey, I'm {{usr.name}} !</p> <!-- Not use the same expression for ng-repeat across app! -->

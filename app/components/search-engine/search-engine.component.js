@@ -10,30 +10,43 @@ angular.module('searchEngine')
       ['$scope', 'EVENTS', 'dbAccess',
       function ($scope, EVENTS, dbAccess)
       {
-        var geocoder = new google.maps.Geocoder();
-        var servCategories = null;
-        var usersInfo = [];
+        var geocoder = new google.maps.Geocoder(),
+            requestedUsers = [],
+            categories = [];
+        
+        //
+        // -- FUNCTIONS --
+        //
+        
+        function setCatList(parent)
+        {
+          $scope.catList = [];
+          categories.forEach(function(category)
+          {
+            if (category.id_parent == parent)
+            {
+              $scope.catList.push(category);
+            }
+          });
+        }
         
         //
         // -- DB ACCESS --
         //
         
         // Users
-        dbAccess.users.query(function(users)
+        var gotUsers = dbAccess.users.query(function(users)
         {
           $scope.users = users;
           users.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
           {
             // Geocoding
-            geocoder.geocode({"address": user.Adresse + ", Suisse", "region": "CH"},function(results, status) // API KEY?
+            geocoder.geocode({"address": user.address + ", Suisse", "region": "CH"},function(results, status) // API KEY?
             {
               if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
               {
                 var loc = results[0].geometry.location;
-                if (usersInfo.push({"surname":user.Surname, "name":user.Name, "pos":[loc.lat(), loc.lng()], "img":user.Image}) == users.length) // Push returns new array's length
-                {
-//                  $scope.$apply(); // Preprocessing over. Launch digest. Only if html needs scope
-                }
+                requestedUsers.push({"surname":user.surname, "name":user.name, "location":[loc.lat(), loc.lng()], "img":user.image});
               }
               else // Geocoding failure
               {
@@ -49,61 +62,39 @@ angular.module('searchEngine')
           console.error("Error while fetching users from db !");
         });
         
-        // Services
-        function getKeys(obj)
+        // Categories
+        dbAccess.categories.query(function(result)
         {
-          var keyArray = [];
-          angular.forEach(obj, function(value, key)
-          {
-            if (key != "$promise" && key != "$resolved") // Resource object!
-            keyArray.push(key);
-          });
-          return keyArray;
-        }
-        
-//        function defineCategories()
-//        {
-//          $scope.categories = [];
-//          
-//        }
-        
-        dbAccess.services.get(function(result)
-        {
-          servCategories = result;
+          categories = result;
           
-          $scope.categories = getKeys(result);
-          
-          console.log("Services from json :");
-          console.log(result);
+          setCatList(null);
         });
         
         //
-        // -- INITIALIZING MAP --
+        // -- EVENTS --
         //
+        
         $scope.$on(EVENTS.MAPLOADED, function() // Map fully loaded
         {
-          usersInfo.forEach(function(info)
+          gotUsers.$promise.then(function() // Wait for this process to be completed
           {
-            $scope.$broadcast(EVENTS.ADDUSER, {fullName:info.surname+" "+info.name, location:info.pos, img:info.img}); // To child
+            $scope.$broadcast(EVENTS.SETUSERS, requestedUsers); // To childs
           });
         });
         
         //
         // -- USER INTERACTION --
         //
-        $scope.subCategory = undefined;
         
-        $scope.catMenuClick = function(cat)
-        {
-          if (cat == undefined)
+        $scope.catListClick = function(category)
+        {          
+          if (category.id_parent == null) // Clicked on main category
           {
-            $scope.categories = getKeys(servCategories);
-            $scope.subCategory = cat;
+            setCatList(category.id_category);
           }
-          else if (servCategories.hasOwnProperty(cat))
+          else // Clicked on subcategory
           {
-            $scope.categories = getKeys(servCategories[cat]);
-            $scope.subCategory = cat;
+            // Set requestedUsers (filter by Category) and broadcast SETUSERS
           }
         }
       }])

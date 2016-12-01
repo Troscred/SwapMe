@@ -1,0 +1,5 @@
+1) Read "introduction aux jointures"
+2) Create db for services
+3) Implement RestAPI
+4) Implement angular service
+5) Implement into searchEngine

@@ -10,17 +10,29 @@ angular.module('usersList')
       ['$scope', 'EVENTS',
       function ($scope, EVENTS)
       {
-        $scope.users = $scope.$parent.users;
+        $scope.users = [];
+        $scope.filterOptions = ["Tous", "RG", "RD", "Majeurs", "Réinit."];
         
-        $scope.onClickRG = function()
-        {
-          console.log("RG Button clicked!");
-        }
+        //
+        // -- EVENTS --
+        //
         
         // Called from parent
-        $scope.$on(EVENTS.ADDUSER, function(event, args)
+        $scope.$on(EVENTS.SETUSERS, function(event, args)
         {
-//          console.log("userList got <Add user> event");
+          args.forEach(function(user)
+          {
+            $scope.users.push({name : user.surname + " " + user.name});
+          });
         });
+        
+        //
+        // -- USER INTERACTIONS --
+        //
+        
+        $scope.filterButtonClick = function(option) // FILTERS ACCROSS USERS-LIST, NOT GOING UP IN HIERARCHY. WHAT ABOUT MAP-CONTAINER???
+        {
+          console.log(option + " Button clicked!");
+        }
       }])
   });

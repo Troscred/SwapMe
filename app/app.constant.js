@@ -2,6 +2,6 @@
 
 angular.module('app').constant('EVENTS',
 {
-  "ADDUSER" : "AU",
+  "SETUSERS" : "SU",
   "MAPLOADED" : "ML"
 });

@@ -10,27 +10,11 @@ angular.module('mapContainer')
       ['$scope', 'EVENTS',
       function ($scope, EVENTS)
       {
-        //
-        // -- MAP INITIALIZATION --
-        //
-        var mapOptions =
-        {
-          zoom: 11,
-          center: new google.maps.LatLng(46.214276, 6.154324)
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-        var infoWindows = [];
-        var markers = [];
-        
-        // Fully loaded event
-        google.maps.event.addListenerOnce(map, 'idle', function()
-        {
-          $scope.$emit(EVENTS.MAPLOADED);// Send signal to parent
-        });
         
         //
-        // -- MAP FUNCTIONS --
+        // -- FUNCTIONS --
         //
+        
         function addUserMarker(userLocation, userFullName)
         {
           var marker = new google.maps.Marker(
@@ -58,10 +42,36 @@ angular.module('mapContainer')
           infoWindows.push(infoWindow);
         }
         
-        // Called from parent
-        $scope.$on(EVENTS.ADDUSER, function(event, args)
+        //
+        // -- MAP INITIALIZATION --
+        //
+        
+        var mapOptions =
         {
-          addUserMarker(args.location, args.fullName);
+          zoom: 11,
+          center: new google.maps.LatLng(46.214276, 6.154324)
+        };
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
+        var infoWindows = [];
+        var markers = [];
+        
+        //
+        // -- EVENTS --
+        //
+        
+        // Fully loaded event
+        google.maps.event.addListenerOnce(map, 'idle', function()
+        {
+          $scope.$emit(EVENTS.MAPLOADED); // Send signal to parent
+        });
+        
+        // Called from parent
+        $scope.$on(EVENTS.SETUSERS, function(event, args)
+        {
+          args.forEach(function(user)
+          {
+            addUserMarker(user.location, user.surname + " " + user.name);
+          });
         });
       }])
   });
