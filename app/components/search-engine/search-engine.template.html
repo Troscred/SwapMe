@@ -35,7 +35,7 @@
     <div class="list-group">
       <button type="button" class="list-group-item" ng-repeat="cat in catList" ng-click="catListClick(cat)">
         {{cat.name}}
-        <span class="badge">1</span>
+        <span class="badge">{{getNbServices(cat)}}</span>
       </button>
     </div>
   </div>

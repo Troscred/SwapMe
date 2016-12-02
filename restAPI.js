@@ -13,7 +13,7 @@ var app = express();
 
 var port = process.env.PORT || 3000;
 var prefix = "/db";
-var DB_PARAMS = ["users", "categories"];
+var DB_PARAMS = ["users", "categories", "nb_serv"];
 
 // ---------
 // FUNCTIONS

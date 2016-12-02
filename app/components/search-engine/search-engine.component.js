@@ -12,7 +12,8 @@ angular.module('searchEngine')
       {
         var geocoder = new google.maps.Geocoder(),
             requestedUsers = [],
-            categories = [];
+            categories = [],
+            nbServices = [];
         
         //
         // -- FUNCTIONS --
@@ -28,6 +29,31 @@ angular.module('searchEngine')
               $scope.catList.push(category);
             }
           });
+        }
+        
+        $scope.getNbServices = function(category) // Should return nb_serv of ANY category (main and sub)
+        {
+          // Wait until db request completed???
+          
+          var val = 0,
+              id = category.id_category;
+          
+          
+          nbServices.forEach(function(element)
+          {
+            if (id == element.id_category) // Sub category
+            {
+              console.log(category.name + " " + element.nb_serv);
+              val = element.nb_serv; // Can't return here. Would break "forEach" only
+            }
+            else if (id == element.id_parent) // Main category : count nb of sub
+            {
+              val += element.nb_serv;
+            }
+          });
+          
+          return val;
+          
         }
         
         //
@@ -68,6 +94,14 @@ angular.module('searchEngine')
           categories = result;
           
           setCatList(null);
+        });
+        
+        // Number of services by categories
+        var gotNbServices = dbAccess.nbServices.query(function(result) // Ideally: get a TABLE with main and sub categories on the same column
+        {
+          nbServices = result;
+          
+          console.log(nbServices);
         });
         
         //

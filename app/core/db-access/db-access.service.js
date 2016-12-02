@@ -7,8 +7,8 @@ angular.
     {
       return { // "{" Not at the next line because of ASI (;) !
         users: $resource('http://localhost:3000/db/users'),
-//        services: $resource('http://localhost:8001/db/services.json')
-        categories: $resource('http://localhost:3000/db/categories')
+        categories: $resource('http://localhost:3000/db/categories'),
+        nbServices: $resource('http://localhost:3000/db/nb_serv')
       };
     }
   ]);
