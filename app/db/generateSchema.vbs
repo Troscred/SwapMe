@@ -1,0 +1,2 @@
+set oshell = wscript.createobject("WScript.Shell")
+oshell.run "cmd.exe /C cd C:\Users\RM\Downloads\schemacrawler\_schemacrawler && schemacrawler.cmd -server=sqlite -database=C:\Users\RM\Nodejs\SwapMe\app\db\datas.db -infolevel=maximum -command=graph -user= -password= -outputformat=png -outputfile=C:\Users\RM\Nodejs\SwapMe\app\db\dbSchema.png"

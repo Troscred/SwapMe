@@ -1,16 +1,98 @@
 <style>
-  #filters
+  #users-list-container
   {
+    display: flex;
+    flex-direction: column;
+  }
+  #buttons-container
+  {
+    flex-basis: auto;
     display: flex;
     justify-content: center;
   }
-  .filterButton
+  #filter-container
+  {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #list-container
+  {
+    flex: 6;
+    overflow-y: scroll;
+    height: 456px; /* NOT DYNAMIC !! */
+  }
+  #cross-icon
+  {
+    margin: 5px;
+    font-size: 20px;
+    cursor: pointer;
+  }
+  .filter-button
   {
     margin: 5px;
   }
+  .filter-button:focus,.filter-button:active
+  {
+    outline: black !important;
+    background-color: white;
+  }
+  .filter-button-active
+  {
+    font-weight: bold !important;
+    background-color: gray !important;
+  }
+  .list-element
+  {
+    height: 80px;
+    margin: 5px;
+  }
+  
+/*  --- ANIMATIONS --- */
+  
+  .list-element.ng-enter,
+  .list-element.ng-leave
+  {
+	transition: 400ms cubic-bezier(0.250, 0.100, 0.250, 1.000) all;
+  }
+  .list-element.ng-leave.ng-leave-active,
+  .list-element.ng-enter
+  {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  .list-element.ng-enter.ng-enter-active,
+  .list-element.ng-leave
+  {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+  
 </style>
 
-<div id="filters">
-  <button class= "filterButton" ng-repeat="option in filterOptions" ng-click=filterButtonClick(option)>{{option}}</button>
+<div id="users-list-container"
+  <!--FILTERS-->
+  <div id="filter-container">
+    <div id="buttons-container" class="btn-group" role="group">
+      <button
+        class="btn btn-default filter-button"
+        ng-repeat="filter in $parent.usersFilters"
+        ng-class="{'filter-button-active': filter.active}"
+        ng-click=filterButtonClick(filter)>
+        {{filter.name}}
+      </button>
+    </div>
+    <span
+      id="cross-icon"
+      class="glyphicon glyphicon-remove"
+      ng-if="activeFilters>0"
+      ng-click="filterButtonClick(null)"/>
+  </div>
+  <!--USERS LIST-->
+  <div id="list-container">
+    <div class="list-element" ng-repeat="user in $parent.requestedUsers">
+      <img ng-src="{{user.image}}" alt="X" style="height: inherit"/>
+      Hey, I'm {{user.surname}} ! I'm living in {{user.address}} and I love flowers.
+    </div>
+  </div>
 </div>
-<p ng-repeat="usr in users">Hey, I'm {{usr.name}} !</p> <!-- Not use the same expression for ng-repeat across app! -->

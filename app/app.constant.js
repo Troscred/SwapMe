@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('app').constant('EVENTS',
+angular.module('app').constant('CST',
 {
-  "SETUSERS" : "SU",
-  "MAPLOADED" : "ML"
+  "MAPLOADED": "ML",
+  "CHANGEFILTERS": "CF"
 });

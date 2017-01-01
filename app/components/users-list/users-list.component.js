@@ -7,32 +7,39 @@ angular.module('usersList')
       'components/users-list/users-list.template.html',
     controller:
       ('usersListController',
-      ['$scope', 'EVENTS',
-      function ($scope, EVENTS)
+      ['$scope', 'CST',
+      function ($scope, CST)
       {
-        $scope.users = [];
-        $scope.filterOptions = ["Tous", "RG", "RD", "Majeurs", "Réinit."];
-        
-        //
-        // -- EVENTS --
-        //
-        
-        // Called from parent
-        $scope.$on(EVENTS.SETUSERS, function(event, args)
-        {
-          args.forEach(function(user)
-          {
-            $scope.users.push({name : user.surname + " " + user.name});
-          });
-        });
+        $scope.activeFilters = 0; // Condition for the cross to appear (ng-if)
         
         //
         // -- USER INTERACTIONS --
         //
         
-        $scope.filterButtonClick = function(option) // FILTERS ACCROSS USERS-LIST, NOT GOING UP IN HIERARCHY. WHAT ABOUT MAP-CONTAINER???
+        $scope.filterButtonClick = function(filter)
         {
-          console.log(option + " Button clicked!");
+          if (filter == null) // Cross
+          {
+            $scope.$parent.usersFilters.forEach(function(filter)
+            {
+              filter.active = false; // Clear all filters
+            });
+            $scope.activeFilters = 0;
+          }
+          else // Filter button
+          {
+            if (filter.active)
+            {
+              filter.active = false;
+              $scope.activeFilters -= 1;
+            }
+            else
+            {
+              filter.active = true;
+              $scope.activeFilters += 1;
+            }
+          }
+          $scope.$emit(CST.CHANGEFILTERS);
         }
       }])
   });

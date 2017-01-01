@@ -13,7 +13,7 @@ var app = express();
 
 var port = process.env.PORT || 3000;
 var prefix = "/db";
-var DB_PARAMS = ["users", "categories", "nb_serv"];
+var DB_TABLE = ["users", "categories", "nb_serv", "cat_users"];
 
 // ---------
 // FUNCTIONS
@@ -34,7 +34,7 @@ var dbPath = "./app/db/datas.db";
 var exists = fs.existsSync(dbPath);
 if (exists)
 {
-  log("Database found! I'm happy.")
+  log(dbPath + " found.")
   var db = new sqlite3.Database(dbPath);
 }
 else
@@ -42,23 +42,43 @@ else
   throw new Error("Database " + dbPath + " not found!"); // Terminate execution
 }
 
-router.get('/:dbParam', function (req, res)
+router.get('/:dbTable/:param?', function (req, res)
 {
-  var param = req.params.dbParam;
+  var dbTable = req.params.dbTable;
   
-  if (DB_PARAMS.indexOf(param) != -1) // Valid DB request
+  if (DB_TABLE.includes(dbTable)) // Valid DB request
   {
-    log("GET request on   " + prefix + "/" + param);
+    log("GET request on   " + prefix + "/" + dbTable);
 
     res.header("Access-Control-Allow-Origin", "http://localhost:8001"); // Localhost Temporary
 //    res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
 //    res.header("Access-Control-Allow-Headers", "Content-Type");
+    
+    var request = "";
+    if (dbTable == DB_TABLE[3])
+    {
+      var param = req.params.param;
+      if (param)
+      {
+        request = "SELECT id_user FROM " + dbTable +
+                  " WHERE id_category = " + param + 
+                  " OR id_parent = " + param +
+                  " GROUP BY id_user";
+      }
+      else
+      {
+        // Error
+      }
+    }
+    else
+    {
+      request = "SELECT * FROM " + dbTable;
+    }
 
-    db.all("SELECT * FROM " + param, function(err, rows)
+    db.all(request, function(err, rows)
     {
       if (err == null)
       {
-//        console.log(rows);
         res.json(rows);
       }
       else
@@ -69,7 +89,7 @@ router.get('/:dbParam', function (req, res)
   }
   else // Invalid DB request
   {
-    log("Invalid GET request : " + prefix + "/" + param + ":" + port);
+    log("Invalid GET request : " + prefix + "/" + dbTable);
   }
 });
 

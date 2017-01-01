@@ -7,53 +7,80 @@ angular.module('searchEngine')
       'components/search-engine/search-engine.template.html',
     controller:
       ('searchEngineController',
-      ['$scope', 'EVENTS', 'dbAccess',
-      function ($scope, EVENTS, dbAccess)
+      ['$scope', '$q', '$window', 'CST', 'dbAccess',
+      function ($scope, $q, $window, CST, dbAccess)
       {
-        var geocoder = new google.maps.Geocoder(),
-            requestedUsers = [],
-            categories = [],
-            nbServices = [];
+        $scope.catMenuList = [];      // Subset of categories
+        $scope.selectedCat = null;    // Selected category in catMenuList
+        $scope.requestedUsers = [];   // Subset of users
+        
+        $scope.usersFilters =         // Filters used in usersList module
+        [
+          {name: "RG", filteredId: [2,4], active: false},
+          {name: "RD", filteredId: [1,3,5,6], active: false},
+          {name: "Ruskov", filteredId: [1,2,3,5], active: false},
+          {name: "Niac", filteredId: [1,3], active: false}
+        ];
+        
+        var users = [],               // { id_user / name / surname / age / address / image }
+            categories = [],          // { id_category / name / description / id_parent }
+            nbServices = [],          // { id_category / id_parent / nb_serv }
+            usersByCat = [];          // { id_category / id_parent / id_user }
+        
+        var filteredUsersId = [],     // Id of users not included in list
+            scopeCatId = 0;           // Id of unfolded category in catMenuList - 0 if menu is in initial state
         
         //
         // -- FUNCTIONS --
         //
         
-        function setCatList(parent)
+        function getCatChilds(parentId) // Determine which categories are displayed on the list menu
         {
-          $scope.catList = [];
-          categories.forEach(function(category)
+          return categories.filter(function(category)
           {
-            if (category.id_parent == parent)
-            {
-              $scope.catList.push(category);
-            }
+            return category.id_parent == parentId;
           });
         }
         
-        $scope.getNbServices = function(category) // Should return nb_serv of ANY category (main and sub)
-        {
-          // Wait until db request completed???
-          
-          var val = 0,
-              id = category.id_category;
-          
+        $scope.getNbServices = function(categoryId) // Return number of services by category
+        {                                           // Element pattern : { category / parent / nb-serv }
+          var val = 0;
           
           nbServices.forEach(function(element)
           {
-            if (id == element.id_category) // Sub category
+            if (categoryId == element.id_category) // Sub category
             {
-              console.log(category.name + " " + element.nb_serv);
               val = element.nb_serv; // Can't return here. Would break "forEach" only
             }
-            else if (id == element.id_parent) // Main category : count nb of sub
+            else if (categoryId == element.id_parent) // Main category : count nb of sub
             {
               val += element.nb_serv;
             }
           });
           
-          return val;
-          
+          return val; // --------!!!! Should return nb_serv of ANY category (main and sub) !!!!--------
+        }
+        
+        function updateRequestedUsers()
+        {
+          getUsersIdByCat(scopeCatId).then(function(usersScope)
+          {
+            if (filteredUsersId.length) // Filter enabled
+            {
+              $scope.requestedUsers = users.filter(function(user)
+              {
+                var userId = user.id_user;
+                return !filteredUsersId.includes(userId) && usersScope.includes(userId);
+              });
+            }
+            else
+            {
+              $scope.requestedUsers = users.filter(function(user)
+              {
+                return usersScope.includes(user.id_user);
+              });
+            }
+          });
         }
         
         //
@@ -61,58 +88,93 @@ angular.module('searchEngine')
         //
         
         // Users
-        var gotUsers = dbAccess.users.query(function(users)
+        var gotUsers = dbAccess.users.query(function(allUsers)
         {
-          $scope.users = users;
-          users.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
-          {
-            // Geocoding
-            geocoder.geocode({"address": user.address + ", Suisse", "region": "CH"},function(results, status) // API KEY?
-            {
-              if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
-              {
-                var loc = results[0].geometry.location;
-                requestedUsers.push({"surname":user.surname, "name":user.name, "location":[loc.lat(), loc.lng()], "img":user.image});
-              }
-              else // Geocoding failure
-              {
-                console.error("Geocoding process failed for " + user.Name);
-              }
-            });
-          });
-          
-          $scope.users = users;
+          users = allUsers;
         },
-        function(err) // DB Failure
+        function(err)
         {
-          console.error("Error while fetching users from db !");
+          console.error("Error while accessing users in db !");
         });
         
         // Categories
-        dbAccess.categories.query(function(result)
+        var gotCategories = dbAccess.categories.query(function(result)
         {
           categories = result;
           
-          setCatList(null);
+          $scope.catMenuList = getCatChilds(null);
+        },
+        function(err)
+        {
+          console.error("Error while accessing categories in db !");
         });
         
         // Number of services by categories
-        var gotNbServices = dbAccess.nbServices.query(function(result) // Ideally: get a TABLE with main and sub categories on the same column
+        var gotNbServices =  dbAccess.nbServices.query(function(result) // Ideally: get a TABLE with main and sub categories on the same column
         {
           nbServices = result;
-          
-          console.log(nbServices);
+        },
+        function(err)
+        {
+          console.error("Error while accessing nbServices in db !");
         });
+        
+        // Users that give services by categories
+        function getUsersIdByCat(categoryId)
+        { // Is it optimized to query DB each time we click on menu ???? Otherwhise should get huge list of all users by category -> not best... ???
+          return dbAccess.usersByCat.query({id_category: categoryId},
+          function(result){},
+          function(err)
+          {
+            console.error("Error while accessing usersByCat in db !");
+          })
+          .$promise.then(function (result) // Preprocessing : [obj, obj, ...] -> [id1, id2, ...]
+          {
+            var ids = [];
+            result.forEach(function (obj)
+            {
+              ids.push(obj.id_user);
+            });
+            return ids;
+          });
+        }
+        
+        function gotAllRequest()
+        {
+          return $q.all([gotUsers.$promise,
+                         gotCategories.$promise,
+                         gotNbServices.$promise]);
+        }
         
         //
         // -- EVENTS --
         //
         
-        $scope.$on(EVENTS.MAPLOADED, function() // Map fully loaded
+        $scope.$on(CST.MAPLOADED, function() // Called once
         {
-          gotUsers.$promise.then(function() // Wait for this process to be completed
+          gotAllRequest().then(function()
           {
-            $scope.$broadcast(EVENTS.SETUSERS, requestedUsers); // To childs
+            $scope.$on(CST.CHANGEFILTERS, function()
+            {
+              filteredUsersId = [];
+              $scope.usersFilters.forEach(function(filter)
+              {
+                if (filter.active)
+                {
+                  filter.filteredId.forEach(function(id)
+                  {
+                    if (!filteredUsersId.includes(id))
+                    {
+                      filteredUsersId.push(id);
+                    }
+                  });
+                }
+              });
+              updateRequestedUsers();
+            });
+            
+            // Other events
+            // ...
           });
         });
         
@@ -120,16 +182,39 @@ angular.module('searchEngine')
         // -- USER INTERACTION --
         //
         
-        $scope.catListClick = function(category)
-        {          
-          if (category.id_parent == null) // Clicked on main category
+        $scope.catMenuListClick = function(category)
+        {
+          if (category == null) // Retour
           {
-            setCatList(category.id_category);
+            $scope.showSubCategories = false;
+            $scope.catMenuList = getCatChilds(null);
+            $scope.selectedCat = null;
+            scopeCatId = 0;
           }
-          else // Clicked on subcategory
+          else // Any category
           {
-            // Set requestedUsers (filter by Category) and broadcast SETUSERS
+            if (category.id_parent == null) // Main category
+            {
+              $scope.showSubCategories = true;
+              $scope.catMenuList = getCatChilds(category.id_category);
+              scopeCatId = category.id_category;
+            }
+            else // Sub category
+            {
+              $window.document.activeElement.blur(); // Clear active class on element
+              if ($scope.selectedCat == category) // Sub category : selected
+              {
+                $scope.selectedCat = null;
+                scopeCatId = category.id_parent; // Restore main category
+              }
+              else // Sub category : not selected
+              {
+                $scope.selectedCat = category;
+                scopeCatId = category.id_category;
+              }
+            }
           }
+          updateRequestedUsers();
         }
       }])
   });

@@ -7,9 +7,23 @@ angular.module('mapContainer')
       'components/map-container/map-container.template.html',
     controller:
       ('mapContainerController',
-      ['$scope', 'EVENTS',
-      function ($scope, EVENTS)
+      ['$scope', 'CST',
+      function ($scope, CST)
       {
+        var mapCanvas = document.getElementById("map_canvas");
+//        mapCanvas.height = mapCanvas.parentNode.clientHeight + "px"; console.log(mapCanvas.height);
+        mapCanvas.height = "400px"; // CORRECT WAY TO SET SIZE ???
+        var mapOptions =
+        {
+          zoom: 11,
+          center: new google.maps.LatLng(46.214276, 6.154324)
+        };
+        var map = new google.maps.Map(mapCanvas, mapOptions);
+        
+        var geocoder = new google.maps.Geocoder();
+        
+        var infoWindows = [];
+        var markers = [];
         
         //
         // -- FUNCTIONS --
@@ -19,7 +33,7 @@ angular.module('mapContainer')
         {
           var marker = new google.maps.Marker(
           {
-            position: new google.maps.LatLng(userLocation[0],userLocation[1]),
+            position: new google.maps.LatLng(userLocation.lat(),userLocation.lng()),
             title: userFullName,
             map: map
           });
@@ -42,18 +56,14 @@ angular.module('mapContainer')
           infoWindows.push(infoWindow);
         }
         
-        //
-        // -- MAP INITIALIZATION --
-        //
-        
-        var mapOptions =
+        function clearMarkers()
         {
-          zoom: 11,
-          center: new google.maps.LatLng(46.214276, 6.154324)
-        };
-        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
-        var infoWindows = [];
-        var markers = [];
+          markers.forEach(function(marker)
+          {
+            marker.setMap(null);
+          });
+          markers = [];
+        }
         
         //
         // -- EVENTS --
@@ -62,15 +72,29 @@ angular.module('mapContainer')
         // Fully loaded event
         google.maps.event.addListenerOnce(map, 'idle', function()
         {
-          $scope.$emit(EVENTS.MAPLOADED); // Send signal to parent
+          google.maps.event.trigger(map, "resize");
+          console.log(map.getDiv().height);
+          $scope.$emit(CST.MAPLOADED); // Send signal to parent
         });
         
-        // Called from parent
-        $scope.$on(EVENTS.SETUSERS, function(event, args)
+        // -------!!! GEOCODING SHOULDNT BE DONE DYNAMICALLY -> ON SIGN IN !!!--------
+        $scope.$watch('$parent.requestedUsers', function()
         {
-          args.forEach(function(user)
+          clearMarkers();
+          $scope.$parent.requestedUsers.forEach(function(user) // Instead of for loop to get dinstinct closure for every iteration
           {
-            addUserMarker(user.location, user.surname + " " + user.name);
+            // Geocoding
+            geocoder.geocode({"address": user.address + ", Suisse", "region": "CH"},function(results, status) // API KEY?
+            {
+              if (status == google.maps.GeocoderStatus.OK && results.length > 0) // Geocoding success
+              {
+                addUserMarker(results[0].geometry.location, user.surname + " " + user.name);
+              }
+              else // Geocoding failure
+              {
+                console.error("Geocoding process failed for " + user.Name);
+              }
+            });
           });
         });
       }])
