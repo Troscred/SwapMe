@@ -72,8 +72,6 @@ angular.module('mapContainer')
         // Fully loaded event
         google.maps.event.addListenerOnce(map, 'idle', function()
         {
-          google.maps.event.trigger(map, "resize");
-          console.log(map.getDiv().height);
           $scope.$emit(CST.MAPLOADED); // Send signal to parent
         });
         

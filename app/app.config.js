@@ -8,14 +8,22 @@ angular.
       $locationProvider.hashPrefix('!');
 
       $routeProvider.
-        when('/main',
-        {
-          template: 'AngularJS is fucking {{"awesome" | uppercase}} !'
-        }).
-        when('/map',
+        when('/Home',
         {
           template: '<search-engine></search-engine>'
         }).
-        otherwise('/main');
+        when('/Connection',
+        {
+          template: "CONNECTION"
+        }).
+        when('/HowItWorks',
+        {
+          template: "HOW IT WORKS"
+        }).
+        when('/Contact',
+        {
+          template: "CONTACT"
+        }).
+        otherwise('/Home');
     }
   ]);
